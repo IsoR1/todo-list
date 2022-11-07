@@ -1,0 +1,25 @@
+#content {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.header-tag {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.home-svg,
+.menu-svg {
+    height: 60px;
+}
+
+.form-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(68, 65, 65, 0.493);
+}
