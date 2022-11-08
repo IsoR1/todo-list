@@ -1,3 +1,5 @@
+import task from './task.js'
+
 const mainTag = function() {
     const content = document.querySelector("#content");
 
@@ -108,26 +110,45 @@ const mainTag = function() {
 
     
     
-    // let myForm = document.getElementById("form-id");
-    // myForm.addEventListener("submit", formSubmitAction)
+    let myForm = document.getElementById("form-id");
     // myForm.addEventListener("submit", (e) => { 
+        
+    const formSubmitAction = (e) => {
+        e.preventDefault();
+        
+        const submitButton = document.getElementById("submit-btn-id");
+        const taskCont = document.querySelector(".task-container");
+        const newTaskDiv = createTaskDiv();
+        let id = 0;
+        
+        let titleInput = document.getElementById('input-title-id').value;
+        let desInput = document.getElementById('input-description-id').value;
+        let dateInput = document.getElementById('input-date-id').value;
+        let prioInput = document.getElementById('input-priority-id').value;
+        task[id] = task(titleInput, desInput, dateInput, prioInput)
+        let titleText = document.createElement("p");
+        let desText = document.createElement("p");
+        let dateText = document.createElement("p");
+        let prioText = document.createElement("p");
+        titleText.classList.add("task-p");
+        desText.classList.add("task-p");
+        dateText.classList.add("task-p");
+        prioText.classList.add("task-p");
+        titleText.textContent = task[id].getTitle();
+        desText.textContent = task[id].getDescription();
+        dateText.textContent = task[id].getDueDate();
+        prioText.textContent = task[id].getPriority();
 
-    // // const formSubmitAction = (e) => {
-    //     e.preventDefault();
-
-    //     const submitButton = document.getElementById("submit-btn-id");
-    //     const taskDiv = document.querySelector(".task-container");
-    //     let id = 0;
-
-    //     let titleInput = document.getElementById('input-title-id').value;
-    //     let desInput = document.getElementById('input-description-id').value;
-    //     let dateInput = document.getElementById('input-date-id').value;
-    //     let prioInput = document.getElementById('input-priority-id').value;
-    //     task[id] = task(titleInput, desInput, dateInput, prioInput)
-    //     taskDiv.append(task[id].getTitle(), task[id].getDescription(), task[id].getDueDate(), task[id].getPriority())
-    //     console.log(task[id].getTitle(), task[id].getDescription());
-    //     id++; 
-    // }
+        // newTaskDiv.appendChild(task[id].getTitle(), task[id].getDescription(), task[id].getDueDate(), task[id].getPriority())
+        newTaskDiv.appendChild(titleText);
+        newTaskDiv.appendChild(desText);
+        newTaskDiv.appendChild(dateText);
+        newTaskDiv.appendChild(prioText);
+        console.log(task[id].getTitle(), task[id].getDescription());
+        taskCont.appendChild(newTaskDiv);
+        id++; 
+    }
+    myForm.addEventListener("submit", formSubmitAction)
     // )
 
     // myForm.addEventListener("submit", (e) => {
