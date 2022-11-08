@@ -1,9 +1,11 @@
 const task = (title, description, dueDate, priority) => {
     
-    const title = () => title;
-    const description = () => description;
-    const dueDate = () => dueDate;
-    const priority = () => priority;
+    const getTitle = () => title;
+    const getDescription = () => description;
+    const getDueDate = () => dueDate;
+    const getPriority = () => priority;
+
+    return {getTitle, getDescription, getDueDate, getPriority}
 }
 
 export default task;
