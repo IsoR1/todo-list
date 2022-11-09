@@ -32,19 +32,36 @@ const header = function() {
         return svg;
     }
 
+    const plusSvg = () => {
+        const svg = document.createElement("img");
+        svg.src = './assets/plus.svg';
+        svg.classList.add("plus-svg")
 
+        return svg;
+    }
+
+    const homePlusDiv = () => {
+        const div = document.createElement("div");
+        div.classList.add("home-plus-div");
+
+        return div;
+    }
 
 
     function createHeader() {
         const header = createHeaderTag();
-        const centerText = createHeaderText()
+        const centerText = createHeaderText();
+        const divHomePlus = homePlusDiv();
         const svgMenu = menuSvg();
         const svgHome = homeSvg();
+        const svgPlus = plusSvg();
 
         content.append(header);
         header.append(svgMenu);
         header.append(centerText);
-        header.append(svgHome);
+        header.append(divHomePlus);
+        divHomePlus.append(svgPlus)
+        divHomePlus.append(svgHome);
     }
 
     createHeader();
