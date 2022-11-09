@@ -140,19 +140,19 @@ const mainTag = function() {
     let myForm = document.getElementById("form-id");
     let myProjectForm = document.getElementById("project-form-id");
         
+    let taskId = 0;
     const formSubmitAction = (e) => {
         e.preventDefault();
         
         const submitButton = document.getElementById("submit-btn-id");
         const taskCont = document.querySelector(".task-container");
         const newTaskDiv = createDiv("task-div");
-        let id = 0;
         
         let titleInput = document.getElementById('input-title-id').value;
         let desInput = document.getElementById('input-description-id').value;
         let dateInput = document.getElementById('input-date-id').value;
         let prioInput = document.getElementById('input-priority-id').value;
-        task[id] = task(titleInput, desInput, dateInput, prioInput)
+        task[taskId] = task(titleInput, desInput, dateInput, prioInput)
         let titleText = document.createElement("p");
         let desText = document.createElement("p");
         let dateText = document.createElement("p");
@@ -161,22 +161,39 @@ const mainTag = function() {
         desText.classList.add("task-p");
         dateText.classList.add("task-p");
         prioText.classList.add("task-p");
-        titleText.textContent = task[id].getTitle();
-        desText.textContent = task[id].getDescription();
-        dateText.textContent = task[id].getDueDate();
-        prioText.textContent = task[id].getPriority();
+        titleText.textContent = task[taskId].getTitle();
+        desText.textContent = task[taskId].getDescription();
+        dateText.textContent = task[taskId].getDueDate();
+        prioText.textContent = task[taskId].getPriority();
 
         newTaskDiv.appendChild(titleText);
         newTaskDiv.appendChild(desText);
         newTaskDiv.appendChild(dateText);
         newTaskDiv.appendChild(prioText);
-        console.log(task[id].getTitle(), task[id].getDescription());
+        // console.log(task[taskId].getTitle(), task[taskId].getDescription());
         taskCont.appendChild(newTaskDiv);
-        id++; 
+        taskId++; 
     }
     myForm.addEventListener("submit", formSubmitAction);
 
+    myProjectForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let projectId = 0;
+        const projectName = document.getElementById("input-project-id").value;
+        project[projectId] = project(projectName);
+        // project[projectId].addToTasklist(task[0]);
+        console.log(project[0])
+        console.log(task[0])
+        project[projectId].addToTaskList(task[0])
+        console.log(project[projectId].getTaskList());
+        
+        projectId++;
+    }) 
     
+
+    const getTask = (id) => {
+        console.log(task[0]);
+    }
 
     return mainTag;
 }
