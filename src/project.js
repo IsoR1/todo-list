@@ -1,11 +1,17 @@
-const project = (name) => {
-    let taskList = [];
+class Project {
+    constructor(name) {
+        this.name = name;
+        this.tasks = [];
+    }
 
-    const getName = () => name;
-    const getTaskList = () => taskList;
-    const addToTaskList = (task) => taskList.push(task);
+    getTask(taskName) {
+        return this.tasks.find(task => task.title === taskName);
+    }
 
-    return { getName, getTaskList, addToTaskList }
+    addTask(task) {
+        this.tasks.push(task);
+    }
+
 }
 
-export default project;
+export default Project;

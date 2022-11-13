@@ -1,11 +1,13 @@
-const task = (title, description, dueDate, priority) => {
-    
-    const getTitle = () => title;
-    const getDescription = () => description;
-    const getDueDate = () => dueDate;
-    const getPriority = () => priority;
+class Task {
+    constructor(title, description, dueDate, priority) {
+        this.projects = [];
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+    }
 
-    return {getTitle, getDescription, getDueDate, getPriority}
 }
 
-export default task;
+export default Task;
+

@@ -1,8 +1,9 @@
-import task from './task.js';
-import project from './project.js'
+import Task from './task.js';
+import Project from './project.js'
 
 const mainTag = function() {
     const content = document.querySelector("#content");
+    let projectNum = 0;
 
     const main = () => {
         const tagMain = document.createElement("main");
@@ -17,17 +18,6 @@ const mainTag = function() {
 
         return div
     }
-    
-    // const formCon = () => {
-    //     const div = document.createElement("div");
-    //     div.classList.add("form-div");
-        
-    //     const text = document.createElement("h2");
-    //     text.textContent = 'Create a task';
-
-    //     div.append(text);
-    //     return div;
-    // }
 
     const formCon = (divClassName, h2textContent) => {
         const div = document.createElement("div");
@@ -134,13 +124,13 @@ const mainTag = function() {
     }
 
     renderMain();
-
-
     
+
     let myForm = document.getElementById("form-id");
     let myProjectForm = document.getElementById("project-form-id");
-        
+    
     let taskId = 0;
+    let projectId = 0;
     const formSubmitAction = (e) => {
         e.preventDefault();
         
@@ -152,7 +142,7 @@ const mainTag = function() {
         let desInput = document.getElementById('input-description-id').value;
         let dateInput = document.getElementById('input-date-id').value;
         let prioInput = document.getElementById('input-priority-id').value;
-        task[taskId] = task(titleInput, desInput, dateInput, prioInput)
+        Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput)
         let titleText = document.createElement("p");
         let desText = document.createElement("p");
         let dateText = document.createElement("p");
@@ -161,42 +151,66 @@ const mainTag = function() {
         desText.classList.add("task-p");
         dateText.classList.add("task-p");
         prioText.classList.add("task-p");
-        titleText.textContent = task[taskId].getTitle();
-        desText.textContent = task[taskId].getDescription();
-        dateText.textContent = task[taskId].getDueDate();
-        prioText.textContent = task[taskId].getPriority();
-
+        titleText.textContent = Task[taskId].title;
+        desText.textContent = Task[taskId].description;
+        dateText.textContent = Task[taskId].dueDate;
+        prioText.textContent = Task[taskId].priority;
+        
         newTaskDiv.appendChild(titleText);
         newTaskDiv.appendChild(desText);
         newTaskDiv.appendChild(dateText);
         newTaskDiv.appendChild(prioText);
-        // console.log(task[taskId].getTitle(), task[taskId].getDescription());
         taskCont.appendChild(newTaskDiv);
+        Project[projectNum].addTask(Task[taskId]);
+        console.log(Project[projectNum].getTask(titleInput))
         taskId++; 
     }
     myForm.addEventListener("submit", formSubmitAction);
 
-    myProjectForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        let projectId = 0;
-        const projectName = document.getElementById("input-project-id").value;
-        project[projectId] = project(projectName);
-        // project[projectId].addToTasklist(task[0]);
-        console.log(project[0])
-        console.log(task[0])
-        project[projectId].addToTaskList(task[0])
-        console.log(project[projectId].getTaskList());
+    const createProject = (e) => {
+        let projectName;
+        if (projectId > 0) {
+            e.preventDefault();
+        }
         
-        projectId++;
-    }) 
-    
+        const projectListDiv = document.querySelector(".project-list-con");
+        const newDiv = document.createElement("div");
+        const text = document.createElement("p");
+        newDiv.classList.add("project-list-div");
+        text.classList.add("project-name-p");
+        
+        if (projectId == 0) {
+            projectName = 'Default';
+        } else {
+        projectName = document.getElementById("input-project-id").value;
+        }
+        Project[projectId] = new Project(projectName);
+        text.textContent = projectName;
+        newDiv.append(text);
+        text.setAttribute('data-value', projectId);
+        projectListDiv.append(newDiv); 
 
-    const getTask = (id) => {
-        console.log(task[0]);
+
+        projectId++;
     }
 
-    return mainTag;
+    createProject();
+
+    myProjectForm.addEventListener("submit", createProject);
+
+    document.body.addEventListener("click", (e) => {
+        if (e.target.className == 'project-name-p') {
+            projectNum = e.target.dataset.value;
+            console.log(Project[projectNum]);
+        }
+    })
+
+
+
+    return mainTag;    
+    
 }
 
 export default mainTag
-
+                    
+                    

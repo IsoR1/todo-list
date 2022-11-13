@@ -4,5 +4,5 @@ import sidebar from './sidebarContent.js';
 import task from './task.js'
 
 header();
-mainTag();
 sidebar();
+mainTag();
