@@ -28,20 +28,29 @@ const sidebar = function() {
         return div;
     }
 
+    const renderProjectSvg = () => {
+        const svg = document.createElement("img");
+        svg.src = './assets/plus.svg';
+        svg.classList.add("project-svg");
+        svg.classList.add("svg");
 
+        return svg
+    }
 
     const renderSidebarContent = () => {
         const sidebarDiv = createDiv("sidebar-div");
+        const svg = renderProjectSvg();
         const nav = projectsText();
         const projectListDiv = createDiv("project-list-con");
 
-        content.append(sidebarDiv)
+        content.append(sidebarDiv);
         sidebarDiv.append(nav);
+        nav.append(svg)
         nav.append(projectListDiv);
     }
 
     renderSidebarContent()
-    
+
     return sidebar;
 }
 

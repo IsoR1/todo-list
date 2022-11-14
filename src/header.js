@@ -20,22 +20,17 @@ const header = function() {
         const svg = document.createElement("img");
         svg.src = './assets/menu.svg'
         svg.classList.add("menu-svg");
+        svg.classList.add("svg");
 
         return svg;
     }
 
-    const homeSvg = () => {
-        const svg = document.createElement("img");
-        svg.src = './assets/home.svg';
-        svg.classList.add("home-svg");
-
-        return svg;
-    }
 
     const plusSvg = () => {
         const svg = document.createElement("img");
         svg.src = './assets/plus.svg';
         svg.classList.add("plus-svg")
+        svg.classList.add("svg")
 
         return svg;
     }
@@ -51,17 +46,13 @@ const header = function() {
     function createHeader() {
         const header = createHeaderTag();
         const centerText = createHeaderText();
-        const divHomePlus = homePlusDiv();
         const svgMenu = menuSvg();
-        const svgHome = homeSvg();
         const svgPlus = plusSvg();
 
         content.append(header);
         header.append(svgMenu);
         header.append(centerText);
-        header.append(divHomePlus);
-        divHomePlus.append(svgPlus)
-        divHomePlus.append(svgHome);
+        header.append(svgPlus);
     }
 
     createHeader();
