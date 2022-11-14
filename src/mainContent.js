@@ -143,6 +143,8 @@ const mainTag = function() {
         let dateInput = document.getElementById('input-date-id').value;
         let prioInput = document.getElementById('input-priority-id').value;
         Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput)
+        Project[projectNum].addTask(Task[taskId]);
+
         let titleText = document.createElement("p");
         let desText = document.createElement("p");
         let dateText = document.createElement("p");
@@ -156,17 +158,15 @@ const mainTag = function() {
         dateText.textContent = Task[taskId].dueDate;
         prioText.textContent = Task[taskId].priority;
         
+        newTaskDiv.setAttribute("data-id", projectNum)
         newTaskDiv.appendChild(titleText);
         newTaskDiv.appendChild(desText);
         newTaskDiv.appendChild(dateText);
         newTaskDiv.appendChild(prioText);
         taskCont.appendChild(newTaskDiv);
-        Project[projectNum].addTask(Task[taskId]);
-        console.log(Project[projectNum].getTask(titleInput))
         taskId++; 
     }
     myForm.addEventListener("submit", formSubmitAction);
-
     const createProject = (e) => {
         let projectName;
         if (projectId > 0) {
@@ -202,10 +202,28 @@ const mainTag = function() {
         if (e.target.className == 'project-name-p') {
             projectNum = e.target.dataset.value;
             console.log(Project[projectNum]);
+            hideDivs();
+            showDivs();
         }
     })
 
-
+    const hideDivs = () => {
+        let taskDivs = document.querySelectorAll(".task-div");
+        taskDivs.forEach(el => {
+            if (el.dataset.id !== projectNum) {
+                el.classList.add('hidden')
+            }
+        })
+    }
+    
+    const showDivs = () => {
+        let taskDivs = document.querySelectorAll(".task-div");
+        taskDivs.forEach(el => {
+            if (el.dataset.id == projectNum) {
+                el.classList.remove('hidden')
+            }
+        })
+    }
 
     return mainTag;    
     
