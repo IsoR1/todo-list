@@ -12,11 +12,11 @@ const mainTag = function () {
     return tagMain;
   };
 
-  const createDiv = (className) => {
-    const div = document.createElement('div');
-    div.classList.add(className);
+  const createEl = (tag, className) => {
+    const el = document.createElement(tag);
+    el.classList.add(className);
 
-    return div;
+    return el;
   };
 
   const formCon = (divClassName, h2textContent) => {
@@ -32,14 +32,12 @@ const mainTag = function () {
   };
 
   const formElements = () => {
-    const formEl = document.createElement('form');
-    formEl.classList.add('task-form');
+    const formEl = createEl("form", "task-form")
     formEl.setAttribute('id', 'form-id');
 
     const formFieldset = document.createElement('fieldset');
 
-    const formLegend = document.createElement('legend');
-    formLegend.classList.add('form-leg');
+    const formLegend = createEl("legend", "form-leg");
     formLegend.innerHTML = 'Add A Task';
 
     const inputTitle = document.createElement('input');
@@ -57,11 +55,24 @@ const mainTag = function () {
     labelDate.innerHTML = 'Date:';
     inputDate.setAttribute('id', 'input-date-id');
     inputDate.name = 'date';
-    const inputPrio = document.createElement('input');
+    const selectPrio = document.createElement('select');
     const labelPrio = document.createElement('label');
     labelPrio.innerHTML = 'Priority:';
-    inputPrio.setAttribute('id', 'input-priority-id');
-    inputPrio.name = 'priority';
+    selectPrio.setAttribute('id', 'select-priority-id');
+    selectPrio.name = 'priority';
+    const optionOne = document.createElement("option");
+    optionOne.setAttribute("value", "Low")
+    optionOne.innerHTML = "Low"
+    const optionTwo = document.createElement("option");
+    optionTwo.setAttribute("value", "Medium")
+    optionTwo.innerHTML = "Medium"
+    const optionThree = document.createElement("option");
+    optionThree.setAttribute("value", "High")
+    optionThree.innerHTML = "High"
+    selectPrio.append(optionOne)
+    selectPrio.append(optionTwo)
+    selectPrio.append(optionThree)
+
     const formBtn = document.createElement('button');
     formBtn.classList.add('submit-form');
     formBtn.setAttribute('id', 'submit-btn-id');
@@ -76,15 +87,14 @@ const mainTag = function () {
     formFieldset.appendChild(labelDate);
     formFieldset.appendChild(inputDate);
     formFieldset.appendChild(labelPrio);
-    formFieldset.appendChild(inputPrio);
+    formFieldset.appendChild(selectPrio);
     formFieldset.append(formBtn);
 
     return formEl;
   };
 
   const createProjectForm = () => {
-    const form = document.createElement('form');
-    form.classList.add('project-form');
+    const form = createEl("form", "project-form")
     form.setAttribute('id', 'project-form-id');
 
     const inputTitle = document.createElement('input');
@@ -93,8 +103,7 @@ const mainTag = function () {
     inputTitle.name = 'project-name';
     inputTitle.setAttribute('id', 'input-project-id');
 
-    const formBtn = document.createElement('button');
-    formBtn.classList.add('submit-project-form');
+    const formBtn = createEl("button", "submit-project-form");
     formBtn.setAttribute('id', 'submit-project-btn-id');
     formBtn.innerHTML = 'Create Project';
 
@@ -107,8 +116,8 @@ const mainTag = function () {
 
   const renderMain = () => {
     const mainTag = main();
-    const taskDiv = createDiv('task-container');
-    const projectFormDiv = createDiv('project-form-div');
+    const taskDiv = createEl('div', 'task-container');
+    const projectFormDiv = createEl('div', 'project-form-div');
     projectFormDiv.classList.add("hidden")
     const formD = formCon('form-div', 'Create a task');
     const formE = formElements();
@@ -126,43 +135,55 @@ const mainTag = function () {
   const myForm = document.getElementById('form-id');
   const myProjectForm = document.getElementById('project-form-id');
 
-  let taskId = 0;
-  let projectId = 0;
-  const formSubmitAction = (e) => {
-    e.preventDefault();
-
-    const submitButton = document.getElementById('submit-btn-id');
+  const renderTaskContent = () => {
     const taskCont = document.querySelector('.task-container');
-    const newTaskDiv = createDiv('task-div');
+    const newTaskDiv = createEl('div', 'task-div');
+    const cardText = createEl('div', "card-div");
+    const delDiv = createEl('div', "delete-div");
 
-    const titleInput = document.getElementById('input-title-id').value;
-    const desInput = document.getElementById('input-description-id').value;
-    const dateInput = document.getElementById('input-date-id').value;
-    const prioInput = document.getElementById('input-priority-id').value;
-    Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput);
-    Project[projectNum].addTask(Task[taskId]);
+    const titleText = createEl('p', "task-p");
+    const desText = createEl('p', "task-p");
+    const dateText = createEl('p', "task-p");
+    const prioText = createEl('p', "task-p");
+    const delText = createEl('p', "del-p");
 
-    const titleText = document.createElement('p');
-    const desText = document.createElement('p');
-    const dateText = document.createElement('p');
-    const prioText = document.createElement('p');
-    titleText.classList.add('task-p');
-    desText.classList.add('task-p');
-    dateText.classList.add('task-p');
-    prioText.classList.add('task-p');
+    delText.textContent = 'X'
     titleText.textContent = Task[taskId].title;
     desText.textContent = Task[taskId].description;
     dateText.textContent = Task[taskId].dueDate;
     prioText.textContent = Task[taskId].priority;
 
     newTaskDiv.setAttribute('data-id', projectNum);
-    newTaskDiv.appendChild(titleText);
-    newTaskDiv.appendChild(desText);
-    newTaskDiv.appendChild(dateText);
-    newTaskDiv.appendChild(prioText);
+    newTaskDiv.setAttribute('data-task-id', taskId);
+    newTaskDiv.appendChild(delDiv);
+    delDiv.appendChild(delText);
+    newTaskDiv.appendChild(cardText)
+    cardText.appendChild(titleText);
+    cardText.appendChild(desText);
+    cardText.appendChild(dateText);
+    cardText.appendChild(prioText);
     taskCont.appendChild(newTaskDiv);
+
+
+  }
+
+  let taskId = 0;
+  let projectId = 0;
+  const formSubmitAction = (e) => {
+    e.preventDefault();
+
+    const submitButton = document.getElementById('submit-btn-id');
+
+    const titleInput = document.getElementById('input-title-id').value;
+    const desInput = document.getElementById('input-description-id').value;
+    const dateInput = document.getElementById('input-date-id').value;
+    const prioInput = document.getElementById('select-priority-id').value;
+    Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput);
+    Project[projectNum].addTask(Task[taskId]);
+    renderTaskContent();
     taskId++;
   };
+
   myForm.addEventListener('submit', formSubmitAction);
   const createProject = (e) => {
     let projectName;
@@ -225,7 +246,13 @@ const mainTag = function () {
   const menuSvgTag = document.querySelector('.menu-svg');
   menuSvgTag.addEventListener('click', () => {
     const sidebar = document.querySelector('.sidebar-div');
+    const con = document.querySelector("#content");
     sidebar.classList.toggle('hidden');
+        if (sidebar.classList.contains("hidden")) {
+          con.style.gridTemplateAreas = '"head head head" "main main main" "main main main"';
+        } else {
+          con.style.gridTemplateAreas = '"head head head" "side main main" "side main main"';
+        }
   });
 
   // Show Task form on click
@@ -242,6 +269,19 @@ const mainTag = function () {
       projectForm.classList.toggle("hidden")
   })
   
+  document.addEventListener("click", (e) => {
+    const deleteP = document.querySelector(".del-p");
+    if (deleteP) {
+      const projDataId = e.target.parentNode.parentNode.dataset.id;
+      const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
+      Project[projDataId].removeTask(taskDataId);
+      e.target.parentNode.parentNode.remove();
+      taskId--;
+      taskDataId--;
+      console.log(Project[projDataId])
+    }
+  })
+
 
   return mainTag;
 };
