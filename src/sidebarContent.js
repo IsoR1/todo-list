@@ -1,19 +1,38 @@
 const sidebar = function() {
     const content = document.getElementById("content"); 
 
-    const createDiv = (className) => {
-        const div = document.createElement("div");
-        div.classList.add(className);
+    const createEl = (tag, className) => {
+        const el = document.createElement(tag);
+        el.classList.add(className);
+    
+        return el;
+    };
 
-        return div
+    const dateButtons = () => {
+        const containerDiv = createEl("div", "sidebar-dates-container");
+
+        const textToday = createEl("p", "date-today");
+        textToday.classList.add('date')
+        textToday.textContent = "Today"
+        const textWeek = createEl("p", "date-week");
+        textWeek.classList.add('date')
+        textWeek.textContent = 'This Week'
+        const textMonth = createEl("p", "date-month");
+        textMonth.classList.add("date")
+        textMonth.textContent = "This Month"
+
+        containerDiv.append(textToday);
+        containerDiv.append(textWeek);
+        containerDiv.append(textMonth);
+
+        return containerDiv;
     }
 
     const projectsText = () => {
-        const div = createDiv("sidebar-nav");
+        const div = createEl("div", "sidebar-nav");
 
         
-        const text = document.createElement("h3");
-        text.classList.add("project-list-text");
+        const text = createEl("h3", "project-list-text");
         text.textContent = 'Projects';
 
         div.append(text);
@@ -21,29 +40,28 @@ const sidebar = function() {
     }
 
     const projectList = () => {
-        const div = document.createElement("div");
-        div.classList.add("project-list-con");
-
+        const div = createEl("div", "project-list-con");
 
         return div;
     }
 
     const renderProjectSvg = () => {
-        const svg = document.createElement("img");
+        const svg = createEl("img", "project-svg");
         svg.src = './assets/plus.svg';
-        svg.classList.add("project-svg");
-        svg.classList.add("svg");
+        svg.classList.add("svg")
 
         return svg
     }
 
     const renderSidebarContent = () => {
-        const sidebarDiv = createDiv("sidebar-div");
+        const dates = dateButtons();
+        const sidebarDiv = createEl("div", "sidebar-div");
         const svg = renderProjectSvg();
         const nav = projectsText();
-        const projectListDiv = createDiv("project-list-con");
+        const projectListDiv = createEl("div", "project-list-con");
 
         content.append(sidebarDiv);
+        sidebarDiv.append(dates)
         sidebarDiv.append(nav);
         nav.append(svg)
         nav.append(projectListDiv);

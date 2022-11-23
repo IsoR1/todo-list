@@ -8,6 +8,10 @@ class Project {
         return this.tasks.find(task => task.title === taskName);
     }
 
+    getTaskId(taskId) {
+        return this.tasks.find(task => task.id === taskId)
+    }
+
     addTask(task) {
         this.tasks.push(task);
     }
@@ -16,6 +20,9 @@ class Project {
         this.tasks.splice(id, 1);
     }
 
+    getTasks() {
+        return this.tasks;
+    }
 }
 
 export default Project;
