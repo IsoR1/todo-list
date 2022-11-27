@@ -26,60 +26,23 @@ const mainTag = function () {
     return div;
   };
 
-  // const taskList = JSON.parse(localStorage.getItem("tasks")) || []
-  // taskList.forEach(el => {
-  //   for (const task in el) {
-  //     console.log(el[task])
-  //   }
-  // })
-
-  const addToStorage = (task) => {
+  const addToStorage = (call, task) => {
     if (localStorage.getItem('projects') === null) {
       projects = []
     } else {
       projects = JSON.parse(localStorage.getItem("projects"));
     }
-    // projects.push(Project[projectNum].getTaskId(taskId));
+    if (call == 'project') {
     projects.push(task);
-    // console.log(Project[projectNum].getTaskId(taskId))
-    localStorage.setItem("projects", JSON.stringify(projects));
-    // console.log(JSON.parse(localStorage.getItem("projects")));
-  }
-
-  const addTaskToStorage = (task) => {
-    if (localStorage.getItem('projects') === null) {
-      projects = []
-    } else {
-      projects = JSON.parse(localStorage.getItem("projects"));
+    } else if (call == "task") {
+      projects[projectNum].tasks.push(task);
     }
-    // projects.push(Project[projectNum].getTaskId(taskId));
-    projects[projectNum].tasks.push(task);
-    // console.log(Project[projectNum].getTaskId(taskId))
-    localStorage.setItem("projects", JSON.stringify(projects));
-    // console.log(JSON.parse(localStorage.getItem("projects")));
-  }
-
-
-
-  const addProjectToStorage = (project) => {
-    if (localStorage.getItem('projects') === null) {
-      projects = []
-    } else {
-      projects = JSON.parse(localStorage.getItem("projects"));
-    }
-    projects.push(project);
     localStorage.setItem("projects", JSON.stringify(projects));
   }
-
-
-  // const updateStorage = (item) => {
-  //   let existing = localStorage.getItem(item);
-  //   let data = existing ? existing + JSON.parse(item) : JSON.parse(item)
-  //   localStorage.setItem(item, data);
-  // }
 
   const formElements = () => {
-    const formEl = createEl("form", "task-form")
+    const todaysDate = format(new Date(), 'yyyy-MM-dd');
+    const formEl = createEl("form", "task-form");
     formEl.setAttribute('id', 'form-id');
 
     const formFieldset = document.createElement('fieldset');
@@ -100,8 +63,9 @@ const mainTag = function () {
     const inputDate = document.createElement('input');
     const labelDate = document.createElement('label');
     labelDate.innerHTML = 'Date:';
-    inputDate.setAttribute("type", "date")
+    inputDate.setAttribute("type", "date");
     inputDate.setAttribute('id', 'input-date-id');
+    inputDate.setAttribute("min", todaysDate);
     inputDate.name = 'date';
     const selectPrio = document.createElement('select');
     const labelPrio = document.createElement('label');
@@ -231,26 +195,12 @@ const mainTag = function () {
     const dateInput = document.getElementById('input-date-id').value;
     const prioInput = document.getElementById('select-priority-id').value;
 
-    Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput, taskId);
+    Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput);
 
-    // console.log(Project[projectNum].getTaskId(taskId))
-    // console.log(projectNum)
     
     Project[projectNum].addTask(Task[taskId]);
-    // console.log(Project[projectNum].getTaskId(taskId))
 
-
-    // addToStorage(Task[taskId]);
-    addTaskToStorage(Task[taskId])
-    console.log(projects[0].tasks.push(Task[taskId]))
-    projects[0].tasks.push(Task[taskId])
-    console.log(projects[0])
-    console.log(JSON.parse(localStorage.getItem("projects")))
-    console.log("break")
-    console.log(JSON.parse(localStorage.getItem("projects[0].tasks")))
-    // addTaskToStorage(Project[projectNum], Task[taskId])
-    // console.log(Project[projectNum].tasks)
-    // console.log(Task[taskId])
+    addToStorage("task", Task[taskId]);
 
     renderTaskContent();
     taskId++;
@@ -258,46 +208,79 @@ const mainTag = function () {
 
   myForm.addEventListener('submit', formSubmitAction);
 
-  const createProject = (e) => {
-    let projectName;
-    if (projectId > 0) {
-      e.preventDefault();
-    }
-
+  const renderProject = (name) => {
     const projectListDiv = document.querySelector('.project-list-con');
     const newDiv = createEl('div', 'project-list-div');
     const text = createEl('p', 'project-name-p');
     const delText = createEl("p", "project-del");
-
-    if (projectId == 0) {
-      projectName = 'Default';
-
-    } else {
-      projectName = document.getElementById('input-project-id').value;
-    }
-    Project[projectId] = new Project(projectName);
-    text.textContent = projectName;
+  
+  
+    text.textContent = name;
     delText.textContent = 'X';
     newDiv.append(text);
     newDiv.append(delText);
     newDiv.setAttribute('data-value', projectId);
     projectListDiv.append(newDiv);
 
+    console.log(Project[projectId])
+  }
 
-    addToStorage(Project[projectId])
+  const createProject = (e) => {
+    let projectName;
+    let storageArray = JSON.parse(localStorage.getItem("projects"));
+    if (projectId > 0) {
+      e.preventDefault();
+    }
+
+    if (projectId == 0) {
+      projectName = 'Default';
+    } else {
+      projectName = document.getElementById('input-project-id').value;
+    }
+    Project[projectId] = new Project(projectName, projectId);
+    renderProject(projectName)
+
+    if (projectId == 0 && !storageArray) {
+      addToStorage("project", Project[projectId])
+    }
+
+    if (projectId !== 0) {
+      addToStorage("project", Project[projectId])
+    }
 
     projectId++;
   };
 
-  createProject();
+  // if (!localStorage.getItem("projects")) {
+  // createProject();
+  // }
 
   myProjectForm.addEventListener('submit', createProject);
+  
+  const renderStorage = () => {
+    let storageArray = JSON.parse(localStorage.getItem("projects"));
+    const projectListDiv = document.querySelector('.project-list-con');
+
+    if (storageArray) {
+    storageArray.forEach(el => {
+      projectId = el.id
+      Project[projectId] = new Project(el.name, projectId);
+      renderProject(el.name)
+      projectId++;
+      console.log(`This is the project id: ${projectId} and the el: ${el.id} and the project: ${Project[projectId]}`)
+      })
+    } else {
+      createProject();
+    }
+  }
+  
+
+  renderStorage()
 
   // Select project and show related tasks
   document.body.addEventListener('click', (e) => {
     if (e.target.className == 'project-name-p') {
       projectNum = e.target.parentNode.dataset.value;
-      // console.log(Project[projectNum]);
       hideDivs();
       showDivs();
     }
@@ -377,8 +360,7 @@ const mainTag = function () {
   const dateMonth = document.querySelector(".date-month")
 
   dateToday.addEventListener("click", () => {
-    const date = new Date();
-    console.log(date)
+
   })
 
   dateWeek.addEventListener("click", () => {
@@ -388,29 +370,6 @@ const mainTag = function () {
   dateMonth.addEventListener("click", () => {
     
   })
-
-
-  // console.log(JSON.parse(localStorage.getItem(taskDivId)))
-  // console.log(localStorage.getItem(taskDivId))
-  // let savedTask = JSON.parse(localStorage.getItem(taskDivId));
-  // let taskC = document.querySelector(".task-container");
-  // taskC.innerHTML += `${savedTask}`
-
-
-  // localStorage.setItem(taskDivId, JSON.stringify(document.querySelector(".task-div").outerHTML));
-  // console.log(JSON.parse(localStorage.getItem(taskDivId)));
-
-  // let savedTask = localStorage.getItem('task');
-  // let savedTaskDiv = JSON.parse(localStorage.getItem('tasksdiv'));
-  // // let savedTaskDiv = localStorage.getItem('tasksdiv');
-  // console.log(savedTaskDiv)
-  // console.log(`this is: ${savedTask}`)
-  // taskC.innerHTML = savedTaskDiv
-  // let taskDiv = document.querySelector(".task-div");
-  // if (taskDiv) {
-  // let newDiv = createEl("div", "")
-  // taskDiv.outerHTML = savedTaskDiv
-  // }
 
   return mainTag;
 };
