@@ -1,6 +1,6 @@
 import Task from './task.js';
 import Project from './project.js';
-import { compareAsc, format } from 'date-fns'
+import { compareAsc, format, endOfMonth, endOfWeek, endOfDay, parseISO} from 'date-fns'
 
 const mainTag = function () {
   const content = document.querySelector('#content');
@@ -147,7 +147,7 @@ const mainTag = function () {
   const myProjectForm = document.getElementById('project-form-id');
 
   let taskDivId = 0;
-  const renderTaskContent = () => {
+  const renderTaskContent = (task) => {
     const taskCont = document.querySelector('.task-container');
 
     taskCont.innerHTML += `
@@ -156,10 +156,10 @@ const mainTag = function () {
           <p class="del-p">X</p>
         </div>
         <div class="card-div">
-          <p class="task-p">${Task[taskId].title}</p>
-          <p class="task-p">${Task[taskId].description}</p>
-          <p class="task-p">${Task[taskId].dueDate}</p>
-          <p class="task-p">${Task[taskId].priority}</p>
+          <p class="task-p">${task.title}</p>
+          <p class="task-p">${task.description}</p>
+          <p class="task-p task-card-date">${task.dueDate}</p>
+          <p class="task-p">${task.priority}</p>
           <div class="task-check-div">
             <label>Completed</label>
             <input type="checkbox" class="task-checkbox">
@@ -202,7 +202,8 @@ const mainTag = function () {
 
     addToStorage("task", Task[taskId]);
 
-    renderTaskContent();
+    renderTaskContent(Task[taskId]);
+    console.log(Task[taskId])
     taskId++;
   };
 
@@ -251,36 +252,43 @@ const mainTag = function () {
     projectId++;
   };
 
-  // if (!localStorage.getItem("projects")) {
-  // createProject();
-  // }
 
   myProjectForm.addEventListener('submit', createProject);
   
-  const renderStorage = () => {
+
+  // Render local storage projects
+  const renderProjectStorage = () => {
     let storageArray = JSON.parse(localStorage.getItem("projects"));
     const projectListDiv = document.querySelector('.project-list-con');
 
     if (storageArray) {
-    storageArray.forEach(el => {
+      storageArray.forEach(el => {
       projectId = el.id
       Project[projectId] = new Project(el.name, projectId);
+      console.log('lmao')
+      console.log(Project[projectId].tasks)
       renderProject(el.name)
       projectId++;
-      console.log(`This is the project id: ${projectId} and the el: ${el.id} and the project: ${Project[projectId]}`)
+      // console.log(`This is the project id: ${projectId} and the el: ${el.id} and the project: ${Project[projectId]}`)
       })
     } else {
       createProject();
     }
   }
-  
 
-  renderStorage()
+  renderProjectStorage()
 
   // Select project and show related tasks
   document.body.addEventListener('click', (e) => {
     if (e.target.className == 'project-name-p') {
       projectNum = e.target.parentNode.dataset.value;
+      let taskArray = JSON.parse(localStorage.getItem("projects"))[projectNum].tasks;
+      if (taskArray) {
+        taskArray.forEach(el => {
+          renderTaskContent(el)
+          Project[projectNum].tasks.push(el)
+        })
+      }
       hideDivs();
       showDivs();
     }
@@ -355,20 +363,56 @@ const mainTag = function () {
   }
   })
 
-  const dateToday = document.querySelector(".date-today")
-  const dateWeek = document.querySelector(".date-week")
-  const dateMonth = document.querySelector(".date-month")
+  const dateToday = document.querySelector(".date-today");
+  const dateWeek = document.querySelector(".date-week");
+  const dateMonth = document.querySelector(".date-month");
 
-  dateToday.addEventListener("click", () => {
 
-  })
-
-  dateWeek.addEventListener("click", () => {
+  dateToday.addEventListener("click", (e) => {
+    // let taskDate = new Date(document.querySelector(".task-card-date").innerHTML);
+    // console.log(z)
+    let endDayDate = endOfDay(new Date());
+    // if (taskDate >  )
+    // console.log(Project[project])
+    // console.log(endW)
+    // console.log(compareAsc(z, endW))
+    // Project[projectNum].tasks.forEach(el => {
+      //   let newDate = new Date(el.dueDate)
+      //   taskCard.forEach(element => {
+        //     if (newDate > endDayDate) {
+          //       console.log(element);
+          
+          //       let taskCard = document.querySelector(".task-div");
+          //       // taskCard.classList.add("hidden")
+          //     }
+          //   })
+          // })
+          // Project[projectNum].tasks.forEach(el => {
+            
+    let taskCard = document.querySelectorAll(".task-card-date");
+    taskCard.forEach(el => {
+    let taskDate = new Date(el.innerHTML)
+    if (taskDate > endDayDate) {
+      el.parentNode.parentNode.classList.add("hidden")
+    }
+    })
     
   })
 
-  dateMonth.addEventListener("click", () => {
-    
+  dateWeek.addEventListener("click", (e) => {
+    let endOfW = endOfWeek(new Date());
+
+    let taskCard = document.querySelectorAll(".task-card-date");
+    taskCard.forEach(el => {
+    let taskDate = new Date(el.innerHTML)
+    if (taskDate > endOfW) {
+      el.parentNode.parentNode.classList.add("hidden")
+    }
+    })
+  })
+
+  dateMonth.addEventListener("click", (e) => {
+    const endOfM = endOfMonth(new Date());
   })
 
   return mainTag;
