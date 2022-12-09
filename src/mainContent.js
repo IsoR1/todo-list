@@ -1,6 +1,8 @@
+import {
+  compareAsc, format, endOfMonth, endOfWeek, endOfDay, parseISO,
+} from 'date-fns';
 import Task from './task.js';
 import Project from './project.js';
-import { compareAsc, format, endOfMonth, endOfWeek, endOfDay, parseISO} from 'date-fns'
 
 const mainTag = function () {
   const content = document.querySelector('#content');
@@ -17,7 +19,7 @@ const mainTag = function () {
   const formCon = (divClassName, h2textContent) => {
     const div = document.createElement('div');
     div.classList.add(divClassName);
-    div.classList.add("hidden");
+    div.classList.add('hidden');
 
     const text = document.createElement('h2');
     text.textContent = h2textContent;
@@ -28,26 +30,26 @@ const mainTag = function () {
 
   const addToStorage = (call, task) => {
     if (localStorage.getItem('projects') === null) {
-      projects = []
+      projects = [];
     } else {
-      projects = JSON.parse(localStorage.getItem("projects"));
+      projects = JSON.parse(localStorage.getItem('projects'));
     }
     if (call == 'project') {
-    projects.push(task);
-    } else if (call == "task") {
+      projects.push(task);
+    } else if (call == 'task') {
       projects[projectNum].tasks.push(task);
     }
-    localStorage.setItem("projects", JSON.stringify(projects));
-  }
+    localStorage.setItem('projects', JSON.stringify(projects));
+  };
 
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
-    const formEl = createEl("form", "task-form");
+    const formEl = createEl('form', 'task-form');
     formEl.setAttribute('id', 'form-id');
 
     const formFieldset = document.createElement('fieldset');
 
-    const formLegend = createEl("legend", "form-leg");
+    const formLegend = createEl('legend', 'form-leg');
     formLegend.innerHTML = 'Add A Task';
 
     const inputTitle = document.createElement('input');
@@ -63,27 +65,27 @@ const mainTag = function () {
     const inputDate = document.createElement('input');
     const labelDate = document.createElement('label');
     labelDate.innerHTML = 'Date:';
-    inputDate.setAttribute("type", "date");
+    inputDate.setAttribute('type', 'date');
     inputDate.setAttribute('id', 'input-date-id');
-    inputDate.setAttribute("min", todaysDate);
+    inputDate.setAttribute('min', todaysDate);
     inputDate.name = 'date';
     const selectPrio = document.createElement('select');
     const labelPrio = document.createElement('label');
     labelPrio.innerHTML = 'Priority:';
     selectPrio.setAttribute('id', 'select-priority-id');
     selectPrio.name = 'priority';
-    const optionOne = document.createElement("option");
-    optionOne.setAttribute("value", "Low")
-    optionOne.innerHTML = "Low"
-    const optionTwo = document.createElement("option");
-    optionTwo.setAttribute("value", "Medium")
-    optionTwo.innerHTML = "Medium"
-    const optionThree = document.createElement("option");
-    optionThree.setAttribute("value", "High")
-    optionThree.innerHTML = "High"
-    selectPrio.append(optionOne)
-    selectPrio.append(optionTwo)
-    selectPrio.append(optionThree)
+    const optionOne = document.createElement('option');
+    optionOne.setAttribute('value', 'Low');
+    optionOne.innerHTML = 'Low';
+    const optionTwo = document.createElement('option');
+    optionTwo.setAttribute('value', 'Medium');
+    optionTwo.innerHTML = 'Medium';
+    const optionThree = document.createElement('option');
+    optionThree.setAttribute('value', 'High');
+    optionThree.innerHTML = 'High';
+    selectPrio.append(optionOne);
+    selectPrio.append(optionTwo);
+    selectPrio.append(optionThree);
     const formBtn = document.createElement('button');
     formBtn.classList.add('submit-form');
     formBtn.setAttribute('id', 'submit-btn-id');
@@ -105,7 +107,7 @@ const mainTag = function () {
   };
 
   const createProjectForm = () => {
-    const form = createEl("form", "project-form")
+    const form = createEl('form', 'project-form');
     form.setAttribute('id', 'project-form-id');
 
     const inputTitle = document.createElement('input');
@@ -114,7 +116,7 @@ const mainTag = function () {
     inputTitle.name = 'project-name';
     inputTitle.setAttribute('id', 'input-project-id');
 
-    const formBtn = createEl("button", "submit-project-form");
+    const formBtn = createEl('button', 'submit-project-form');
     formBtn.setAttribute('id', 'submit-project-btn-id');
     formBtn.innerHTML = 'Create Project';
 
@@ -126,10 +128,10 @@ const mainTag = function () {
   };
 
   const renderMain = () => {
-    const mainTag = createEl("main", "main-content")
+    const mainTag = createEl('main', 'main-content');
     const taskDiv = createEl('div', 'task-container');
     const projectFormDiv = createEl('div', 'project-form-div');
-    projectFormDiv.classList.add("hidden")
+    projectFormDiv.classList.add('hidden');
     const formD = formCon('form-div', 'Create a task');
     const formE = formElements();
     const formProject = createProjectForm();
@@ -166,22 +168,22 @@ const mainTag = function () {
           </div>
         </div>
       </div>
-    `
+    `;
 
     taskDivId++;
-  }
+  };
 
   // Toggle completion
-  document.addEventListener("click", (e) => {
+  document.addEventListener('click', (e) => {
     if (e.target.className === 'task-checkbox'); {
-    let currentId = e.target.parentNode.parentNode.parentNode.dataset.id;
-     if (Task[currentId].completed == false) {
-       Task[currentId].completed = true;
+      const currentId = e.target.parentNode.parentNode.parentNode.dataset.id;
+      if (Task[currentId].completed == false) {
+        Task[currentId].completed = true;
       } else if (Task[currentId].completed == true) {
-        Task[currentId].completed = false
+        Task[currentId].completed = false;
       }
     }
-  })
+  });
 
   let taskId = 0;
   let projectId = 0;
@@ -197,13 +199,12 @@ const mainTag = function () {
 
     Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput);
 
-    
     Project[projectNum].addTask(Task[taskId]);
 
-    addToStorage("task", Task[taskId]);
+    addToStorage('task', Task[taskId]);
 
     renderTaskContent(Task[taskId]);
-    console.log(Task[taskId])
+    console.log(Task[taskId]);
     taskId++;
   };
 
@@ -213,9 +214,8 @@ const mainTag = function () {
     const projectListDiv = document.querySelector('.project-list-con');
     const newDiv = createEl('div', 'project-list-div');
     const text = createEl('p', 'project-name-p');
-    const delText = createEl("p", "project-del");
-  
-  
+    const delText = createEl('p', 'project-del');
+
     text.textContent = name;
     delText.textContent = 'X';
     newDiv.append(text);
@@ -223,12 +223,12 @@ const mainTag = function () {
     newDiv.setAttribute('data-value', projectId);
     projectListDiv.append(newDiv);
 
-    console.log(Project[projectId])
-  }
+    console.log(Project[projectId]);
+  };
 
   const createProject = (e) => {
     let projectName;
-    let storageArray = JSON.parse(localStorage.getItem("projects"));
+    const storageArray = JSON.parse(localStorage.getItem('projects'));
     if (projectId > 0) {
       e.preventDefault();
     }
@@ -239,55 +239,52 @@ const mainTag = function () {
       projectName = document.getElementById('input-project-id').value;
     }
     Project[projectId] = new Project(projectName, projectId);
-    renderProject(projectName)
+    renderProject(projectName);
 
     if (projectId == 0 && !storageArray) {
-      addToStorage("project", Project[projectId])
+      addToStorage('project', Project[projectId]);
     }
 
     if (projectId !== 0) {
-      addToStorage("project", Project[projectId])
+      addToStorage('project', Project[projectId]);
     }
 
     projectId++;
   };
 
-
   myProjectForm.addEventListener('submit', createProject);
-  
 
   // Render local storage projects
   const renderProjectStorage = () => {
-    let storageArray = JSON.parse(localStorage.getItem("projects"));
+    const storageArray = JSON.parse(localStorage.getItem('projects'));
     const projectListDiv = document.querySelector('.project-list-con');
 
     if (storageArray) {
-      storageArray.forEach(el => {
-      projectId = el.id
-      Project[projectId] = new Project(el.name, projectId);
-      console.log('lmao')
-      console.log(Project[projectId].tasks)
-      renderProject(el.name)
-      projectId++;
+      storageArray.forEach((el) => {
+        projectId = el.id;
+        Project[projectId] = new Project(el.name, projectId);
+        console.log(Project[projectId].tasks);
+        renderProject(el.name);
+        projectId++;
       // console.log(`This is the project id: ${projectId} and the el: ${el.id} and the project: ${Project[projectId]}`)
-      })
+      });
     } else {
       createProject();
     }
-  }
+  };
 
-  renderProjectStorage()
+  renderProjectStorage();
 
   // Select project and show related tasks
   document.body.addEventListener('click', (e) => {
     if (e.target.className == 'project-name-p') {
       projectNum = e.target.parentNode.dataset.value;
-      let taskArray = JSON.parse(localStorage.getItem("projects"))[projectNum].tasks;
+      const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
       if (taskArray) {
-        taskArray.forEach(el => {
-          renderTaskContent(el)
-          Project[projectNum].tasks.push(el)
-        })
+        taskArray.forEach((el) => {
+          renderTaskContent(el);
+          Project[projectNum].tasks.push(el);
+        });
       }
       hideDivs();
       showDivs();
@@ -316,32 +313,31 @@ const mainTag = function () {
   const menuSvgTag = document.querySelector('.menu-svg');
   menuSvgTag.addEventListener('click', () => {
     const sidebar = document.querySelector('.sidebar-div');
-    const con = document.querySelector("#content");
+    const con = document.querySelector('#content');
     sidebar.classList.toggle('hidden');
-        if (sidebar.classList.contains("hidden")) {
-          con.style.gridTemplateAreas = '"head head head" "main main main" "main main main"';
-        } else {
-          con.style.gridTemplateAreas = '"head head head" "side main main" "side main main"';
-        }
+    if (sidebar.classList.contains('hidden')) {
+      con.style.gridTemplateAreas = '"head head head" "main main main" "main main main"';
+    } else {
+      con.style.gridTemplateAreas = '"head head head" "side main main" "side main main"';
+    }
   });
 
   // Show Task form on click
-  const taskSvg = document.querySelector(".plus-svg");
-  taskSvg.addEventListener("click", () => {
-    const formDiv = document.querySelector(".form-div");
-    formDiv.classList.toggle("hidden");
-  })
+  const taskSvg = document.querySelector('.plus-svg');
+  taskSvg.addEventListener('click', () => {
+    const formDiv = document.querySelector('.form-div');
+    formDiv.classList.toggle('hidden');
+  });
 
-  
-  const projectFormSvg = document.querySelector(".project-svg");
-  projectFormSvg.addEventListener("click", () => {
-      const projectForm = document.querySelector(".project-form-div");
-      projectForm.classList.toggle("hidden")
-  })
-  
+  const projectFormSvg = document.querySelector('.project-svg');
+  projectFormSvg.addEventListener('click', () => {
+    const projectForm = document.querySelector('.project-form-div');
+    projectForm.classList.toggle('hidden');
+  });
+
   // Delete Tasks
-  document.addEventListener("click", (e) => {
-    const deleteP = document.querySelector(".del-p");
+  document.addEventListener('click', (e) => {
+    const deleteP = document.querySelector('.del-p');
     if (deleteP && e.target == deleteP) {
       const projDataId = e.target.parentNode.parentNode.dataset.id;
       const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
@@ -350,72 +346,62 @@ const mainTag = function () {
       taskId--;
       taskDataId--;
     }
-  })
+  });
 
   // Delete Projects
-  document.addEventListener("click", (e) => {
-  const delX = document.querySelector(".project-del");
-  if (delX && e.target == delX) {
-    const projDataVal = e.target.parentNode.dataset.value;
-    e.target.parentNode.remove();
+  document.addEventListener('click', (e) => {
+    const delX = document.querySelector('.project-del');
+    if (delX && e.target == delX) {
+      const projDataVal = e.target.parentNode.dataset.value;
+      e.target.parentNode.remove();
 
-    projectId -= 1;
-  }
-  })
-
-  const dateToday = document.querySelector(".date-today");
-  const dateWeek = document.querySelector(".date-week");
-  const dateMonth = document.querySelector(".date-month");
-
-
-  dateToday.addEventListener("click", (e) => {
-    // let taskDate = new Date(document.querySelector(".task-card-date").innerHTML);
-    // console.log(z)
-    let endDayDate = endOfDay(new Date());
-    // if (taskDate >  )
-    // console.log(Project[project])
-    // console.log(endW)
-    // console.log(compareAsc(z, endW))
-    // Project[projectNum].tasks.forEach(el => {
-      //   let newDate = new Date(el.dueDate)
-      //   taskCard.forEach(element => {
-        //     if (newDate > endDayDate) {
-          //       console.log(element);
-          
-          //       let taskCard = document.querySelector(".task-div");
-          //       // taskCard.classList.add("hidden")
-          //     }
-          //   })
-          // })
-          // Project[projectNum].tasks.forEach(el => {
-            
-    let taskCard = document.querySelectorAll(".task-card-date");
-    taskCard.forEach(el => {
-    let taskDate = new Date(el.innerHTML)
-    if (taskDate > endDayDate) {
-      el.parentNode.parentNode.classList.add("hidden")
+      projectId -= 1;
     }
+  });
+
+  const dateToday = document.querySelector('.date-today');
+  const dateWeek = document.querySelector('.date-week');
+  const dateMonth = document.querySelector('.date-month');
+
+  dateToday.addEventListener('click', (e) => {
+    const endDayDate = endOfDay(new Date());
+
+    const taskDiv = document.querySelectorAll('.task-div');
+    taskDiv.forEach((el) => {
+      const taskDate = new Date(el.children[1].children[2].innerHTML.replace(/-/g, '/'));
+      if (taskDate > endDayDate) {
+        el.classList.add('hidden');
+      }
+    });
+  });
+
+  dateWeek.addEventListener('click', (e) => {
+    const endOfW = endOfWeek(new Date());
+
+    const taskDiv = document.querySelectorAll(".task-div");
+    taskDiv.forEach((el) => {
+      const taskDate = new Date(el.children[1].children[2].innerHTML.replace(/-/g, '/'));
+      if (taskDate > endOfW) {
+        el.classList.add("hidden")
+      }
+    })
+  });
+
+  dateMonth.addEventListener('click', (e) => {
+    const endOfM = endOfMonth(new Date());
+
+    const taskDiv = document.querySelectorAll(".task-div");
+    taskDiv.forEach((el) => {
+      const taskDate = new Date(el.children[1].children[2].innerHTML.replace(/-/g, '/'));
+      if (taskDate > endOfM) {
+        el.classList.add("hidden")
+      }
     })
     
-  })
-
-  dateWeek.addEventListener("click", (e) => {
-    let endOfW = endOfWeek(new Date());
-
-    let taskCard = document.querySelectorAll(".task-card-date");
-    taskCard.forEach(el => {
-    let taskDate = new Date(el.innerHTML)
-    if (taskDate > endOfW) {
-      el.parentNode.parentNode.classList.add("hidden")
-    }
-    })
-  })
-
-  dateMonth.addEventListener("click", (e) => {
-    const endOfM = endOfMonth(new Date());
-  })
+  });
 
   return mainTag;
 };
 
 export default mainTag;
+
