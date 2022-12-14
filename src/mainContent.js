@@ -149,6 +149,9 @@ const mainTag = function () {
   const myProjectForm = document.getElementById('project-form-id');
 
   let taskDivId = 0;
+  let taskId = 0;
+  let projectId = 0;
+
   const renderTaskContent = (task) => {
     const taskCont = document.querySelector('.task-container');
 
@@ -171,6 +174,7 @@ const mainTag = function () {
     `;
 
     taskDivId++;
+    taskId++;
   };
 
   // Toggle completion
@@ -185,8 +189,7 @@ const mainTag = function () {
     }
   });
 
-  let taskId = 0;
-  let projectId = 0;
+
   const formSubmitAction = (e) => {
     e.preventDefault();
 
@@ -205,7 +208,6 @@ const mainTag = function () {
 
     renderTaskContent(Task[taskId]);
     console.log(Task[taskId]);
-    taskId++;
   };
 
   myForm.addEventListener('submit', formSubmitAction);
@@ -338,9 +340,11 @@ const mainTag = function () {
   // Delete Tasks
   document.addEventListener('click', (e) => {
     const deleteP = document.querySelector('.del-p');
-    if (deleteP && e.target == deleteP) {
+    // if (deleteP && e.target == deleteP) {
+    if (e.target.className == 'del-p') {
       const projDataId = e.target.parentNode.parentNode.dataset.id;
       const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
+      const selectedTask = document.querySelector(`[data-task-id="${taskDataId}"]`)
       Project[projDataId].removeTask(taskDataId);
       e.target.parentNode.parentNode.remove();
       taskId--;
@@ -350,10 +354,12 @@ const mainTag = function () {
 
   // Delete Projects
   document.addEventListener('click', (e) => {
-    const delX = document.querySelector('.project-del');
-    if (delX && e.target == delX) {
+    // const delX = document.querySelector('.project-del');
+    // if (delX && e.target == delX) {
+      if (e.target.className == 'project-del') {
       const projDataVal = e.target.parentNode.dataset.value;
-      e.target.parentNode.remove();
+      let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
+      selectedProject.remove();
 
       projectId -= 1;
     }
