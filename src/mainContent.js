@@ -42,6 +42,14 @@ const mainTag = function () {
     localStorage.setItem('projects', JSON.stringify(projects));
   };
 
+  const removeFromStorage = (taskInd) => {
+    let projectsArray = JSON.parse(localStorage.getItem("projects"));
+
+    projectsArray.splice(taskInd, 1);
+
+    localStorage.setItem("projects", JSON.stringify(projectsArray))
+  }
+
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
     const formEl = createEl('form', 'task-form');
@@ -224,8 +232,6 @@ const mainTag = function () {
     newDiv.append(delText);
     newDiv.setAttribute('data-value', projectId);
     projectListDiv.append(newDiv);
-
-    console.log(Project[projectId]);
   };
 
   const createProject = (e) => {
@@ -268,7 +274,6 @@ const mainTag = function () {
         console.log(Project[projectId].tasks);
         renderProject(el.name);
         projectId++;
-      // console.log(`This is the project id: ${projectId} and the el: ${el.id} and the project: ${Project[projectId]}`)
       });
     } else {
       createProject();
@@ -331,6 +336,7 @@ const mainTag = function () {
     formDiv.classList.toggle('hidden');
   });
 
+  // Show Project form on click
   const projectFormSvg = document.querySelector('.project-svg');
   projectFormSvg.addEventListener('click', () => {
     const projectForm = document.querySelector('.project-form-div');
@@ -340,11 +346,10 @@ const mainTag = function () {
   // Delete Tasks
   document.addEventListener('click', (e) => {
     const deleteP = document.querySelector('.del-p');
-    // if (deleteP && e.target == deleteP) {
     if (e.target.className == 'del-p') {
       const projDataId = e.target.parentNode.parentNode.dataset.id;
       const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
-      const selectedTask = document.querySelector(`[data-task-id="${taskDataId}"]`)
+      const selectedTask = document.querySelector(`[data-task-id="${taskDataId}"]`);
       Project[projDataId].removeTask(taskDataId);
       e.target.parentNode.parentNode.remove();
       taskId--;
@@ -354,15 +359,13 @@ const mainTag = function () {
 
   // Delete Projects
   document.addEventListener('click', (e) => {
-    // const delX = document.querySelector('.project-del');
-    // if (delX && e.target == delX) {
       if (e.target.className == 'project-del') {
-      const projDataVal = e.target.parentNode.dataset.value;
-      let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
-      selectedProject.remove();
-
-      projectId -= 1;
-    }
+        const projDataVal = e.target.parentNode.dataset.value;
+        let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
+        removeFromStorage(projDataVal)
+        selectedProject.remove();
+        projectId -= 1;
+      }
   });
 
   const dateToday = document.querySelector('.date-today');
