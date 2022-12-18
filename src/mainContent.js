@@ -42,13 +42,20 @@ const mainTag = function () {
     localStorage.setItem('projects', JSON.stringify(projects));
   };
 
-  const removeFromStorage = (taskInd) => {
+  const removeProjectFromStorage = (projInd) => {
     let projectsArray = JSON.parse(localStorage.getItem("projects"));
 
-    projectsArray.splice(taskInd, 1);
+    projectsArray.splice(projInd, 1);
 
     localStorage.setItem("projects", JSON.stringify(projectsArray))
   }
+
+  const removeTaskFromStorage = (projInd, taskInd) => {
+    let projectsArray = JSON.parse(localStorage.getItem("projects"));
+
+    console.log(projectsArray[projInd].tasks)
+  }
+
 
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
@@ -246,6 +253,13 @@ const mainTag = function () {
     } else {
       projectName = document.getElementById('input-project-id').value;
     }
+
+    // if (document.getElementById("input-project-id").value == 'Default') {
+    if (projectName == 'Default') {
+      alert("Default is not a valid name, please choose another")
+      return
+    }
+    
     Project[projectId] = new Project(projectName, projectId);
     renderProject(projectName);
 
@@ -350,6 +364,7 @@ const mainTag = function () {
       const projDataId = e.target.parentNode.parentNode.dataset.id;
       const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
       const selectedTask = document.querySelector(`[data-task-id="${taskDataId}"]`);
+      removeTaskFromStorage(projDataId)
       Project[projDataId].removeTask(taskDataId);
       e.target.parentNode.parentNode.remove();
       taskId--;
@@ -361,10 +376,13 @@ const mainTag = function () {
   document.addEventListener('click', (e) => {
       if (e.target.className == 'project-del') {
         const projDataVal = e.target.parentNode.dataset.value;
-        let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
-        removeFromStorage(projDataVal)
-        selectedProject.remove();
-        projectId -= 1;
+        let projectName = e.target.previousSibling.innerHTML
+        if (projectName !== 'Default') {
+          let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
+          removeProjectFromStorage(projDataVal)
+          selectedProject.remove();
+          projectId -= 1;
+        }
       }
   });
 
