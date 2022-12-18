@@ -72,6 +72,7 @@ const mainTag = function () {
     labelTitle.innerHTML = 'Title:';
     inputTitle.name = 'title';
     inputTitle.setAttribute('id', 'input-title-id');
+    inputTitle.setAttribute("required", "")
     const inputDes = document.createElement('input');
     const labelDes = document.createElement('label');
     labelDes.innerHTML = 'Description:';
@@ -83,6 +84,7 @@ const mainTag = function () {
     inputDate.setAttribute('type', 'date');
     inputDate.setAttribute('id', 'input-date-id');
     inputDate.setAttribute('min', todaysDate);
+    inputDate.setAttribute("required", "")
     inputDate.name = 'date';
     const selectPrio = document.createElement('select');
     const labelPrio = document.createElement('label');
@@ -259,7 +261,7 @@ const mainTag = function () {
       alert("Default is not a valid name, please choose another")
       return
     }
-    
+
     Project[projectId] = new Project(projectName, projectId);
     renderProject(projectName);
 
