@@ -45,15 +45,21 @@ const mainTag = function () {
   const removeProjectFromStorage = (projInd) => {
     let projectsArray = JSON.parse(localStorage.getItem("projects"));
 
+    console.log(`this is the projInd: ${projInd}`)
     projectsArray.splice(projInd, 1);
 
     localStorage.setItem("projects", JSON.stringify(projectsArray))
   }
-
+  
   const removeTaskFromStorage = (projInd, taskInd) => {
     let projectsArray = JSON.parse(localStorage.getItem("projects"));
-
-    console.log(projectsArray[projInd].tasks)
+    
+    console.log(taskInd)
+    projectsArray[projInd].tasks.splice(taskInd, 1);
+    
+    console.log(projectsArray)
+    localStorage.setItem("projects", JSON.stringify(projectsArray));
+    console.log(projectsArray)
   }
 
 
@@ -132,6 +138,7 @@ const mainTag = function () {
     labelTitle.innerHTML = 'Project Name:';
     inputTitle.name = 'project-name';
     inputTitle.setAttribute('id', 'input-project-id');
+    inputTitle.setAttribute("required", "")
 
     const formBtn = createEl('button', 'submit-project-form');
     formBtn.setAttribute('id', 'submit-project-btn-id');
@@ -197,12 +204,12 @@ const mainTag = function () {
   // Toggle completion
   document.addEventListener('click', (e) => {
     if (e.target.className === 'task-checkbox'); {
-      const currentId = e.target.parentNode.parentNode.parentNode.dataset.id;
-      if (Task[currentId].completed == false) {
-        Task[currentId].completed = true;
-      } else if (Task[currentId].completed == true) {
-        Task[currentId].completed = false;
-      }
+      // const currentId = e.target.parentNode.parentNode.parentNode.dataset.id;
+      // if (Task[currentId].completed == false) {
+      //   Task[currentId].completed = true;
+      // } else if (Task[currentId].completed == true) {
+      //   Task[currentId].completed = false;
+      // }
     }
   });
 
@@ -257,7 +264,7 @@ const mainTag = function () {
     }
 
     // if (document.getElementById("input-project-id").value == 'Default') {
-    if (projectName == 'Default') {
+    if (projectName == 'Default' && projectId > 0) {
       alert("Default is not a valid name, please choose another")
       return
     }
@@ -303,6 +310,14 @@ const mainTag = function () {
     if (e.target.className == 'project-name-p') {
       projectNum = e.target.parentNode.dataset.value;
       const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
+      
+      // if (Project[projectNum].selected) {
+        // Don't render the tasks again if the current project is already selected
+        // return;
+      // }
+          
+
+      // POSSIBLY THE REASON FOR ERROR
       if (taskArray) {
         taskArray.forEach((el) => {
           renderTaskContent(el);
@@ -311,6 +326,15 @@ const mainTag = function () {
       }
       hideDivs();
       showDivs();
+
+      // Project[projectNum].selected = true;
+
+      // let allProjects = document.querySelectorAll(".project-list-div");
+      // allProjects.forEach(el => {
+        // if (el.dataset.value !== projectNum) {
+          // Project[el.dataset.value].selected = false
+        // }
+      // })
     }
   });
 
@@ -363,12 +387,17 @@ const mainTag = function () {
   document.addEventListener('click', (e) => {
     const deleteP = document.querySelector('.del-p');
     if (e.target.className == 'del-p') {
-      const projDataId = e.target.parentNode.parentNode.dataset.id;
-      const taskDataId = e.target.parentNode.parentNode.dataset.taskId;
-      const selectedTask = document.querySelector(`[data-task-id="${taskDataId}"]`);
-      removeTaskFromStorage(projDataId)
-      Project[projDataId].removeTask(taskDataId);
-      e.target.parentNode.parentNode.remove();
+      let projDataId = e.target.parentNode.parentNode.dataset.id;
+      let currentTaskId = e.target.parentNode.parentNode.dataset.taskId;
+      let selectedTask = document.querySelector(`[data-task-id="${currentTaskId}"]`);
+
+     // find index that corresponds to the selected task element's id
+      const allTasks = document.querySelectorAll("[data-value]");
+      const index = [...allTasks].findIndex(el => el.dataset.value === currentTaskId)
+
+      removeTaskFromStorage(projDataId, index);
+      Project[projDataId].removeTask(currentTaskId);
+      selectedTask.remove();
       taskId--;
       taskDataId--;
     }
@@ -377,12 +406,18 @@ const mainTag = function () {
   // Delete Projects
   document.addEventListener('click', (e) => {
       if (e.target.className == 'project-del') {
-        const projDataVal = e.target.parentNode.dataset.value;
-        let projectName = e.target.previousSibling.innerHTML
+        let projDataVal = e.target.parentNode.dataset.value;
+        let projectName = e.target.previousSibling.innerHTML;
         if (projectName !== 'Default') {
           let selectedProject = document.querySelector(`[data-value="${projDataVal}"]`);
-          removeProjectFromStorage(projDataVal)
+
+          // find index that corresponds to the selected project element's value
+          const allProjects = document.querySelectorAll("[data-value]");
+          const index = [...allProjects].findIndex(el => el.dataset.value === projDataVal)
+
+          removeProjectFromStorage(index)
           selectedProject.remove();
+          console.log(`test ${projDataVal}, || ${projectId}`)
           projectId -= 1;
         }
       }
@@ -434,3 +469,64 @@ const mainTag = function () {
 
 export default mainTag;
 
+
+
+
+
+
+
+
+
+
+
+
+// document.body.addEventListener('click', (e) => {
+//   if (e.target.className == 'project-name-p') {
+//     projectNum = e.target.parentNode.dataset.value;
+//     const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
+    
+//     // POSSIBLY THE REASON FOR ERROR
+//     if (taskArray) {
+//       taskArray.forEach((el) => {
+//         renderTaskContent(el);
+//         Project[projectNum].tasks.push(el);
+//         console.log("task array test")
+//       });
+//     } else {
+//       console.log('test')
+//     }
+//     hideDivs();
+//     showDivs();
+//   }
+// });
+
+//     Check if the current project is already selected before rendering the tasks:
+
+// document.body.addEventListener('click', (e) => {
+//   if (e.target.className == 'project-name-p') {
+//     projectNum = e.target.parentNode.dataset.value;
+//     const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
+  
+//     // Check if the current project is already selected
+//     if (Project[projectNum].selected) {
+//       // Don't render the tasks again if the current project is already selected
+//       return;
+//     }
+  
+//     // POSSIBLY THE REASON FOR ERROR
+//     if (taskArray) {
+//       taskArray.forEach((el) => {
+//         renderTaskContent(el);
+//         Project[projectNum].tasks.push(el);
+//         console.log("task array test")
+//       });
+//     } else {
+//       console.log('test')
+//     }
+//     hideDivs();
+//     showDivs();
+  
+//     // Mark the current project as selected
+//     Project[projectNum].selected = true;
+//   }
+// });
