@@ -311,30 +311,32 @@ const mainTag = function () {
       projectNum = e.target.parentNode.dataset.value;
       const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
       
-      // if (Project[projectNum].selected) {
-        // Don't render the tasks again if the current project is already selected
-        // return;
-      // }
+      if (Project[projectNum].selected) {
+        return;
+      }
           
 
-      // POSSIBLY THE REASON FOR ERROR
+    if (!Project[projectNum].tasksRendered) {
       if (taskArray) {
         taskArray.forEach((el) => {
           renderTaskContent(el);
           Project[projectNum].tasks.push(el);
         });
+        Project[projectNum].tasksRendered = true;
       }
+    }
+
       hideDivs();
       showDivs();
 
-      // Project[projectNum].selected = true;
+      Project[projectNum].selected = true;
 
-      // let allProjects = document.querySelectorAll(".project-list-div");
-      // allProjects.forEach(el => {
-        // if (el.dataset.value !== projectNum) {
-          // Project[el.dataset.value].selected = false
-        // }
-      // })
+      let allProjects = document.querySelectorAll(".project-list-div");
+      allProjects.forEach(el => {
+        if (el.dataset.value !== projectNum) {
+          Project[el.dataset.value].selected = false
+        }
+      })
     }
   });
 
@@ -468,65 +470,3 @@ const mainTag = function () {
 };
 
 export default mainTag;
-
-
-
-
-
-
-
-
-
-
-
-
-// document.body.addEventListener('click', (e) => {
-//   if (e.target.className == 'project-name-p') {
-//     projectNum = e.target.parentNode.dataset.value;
-//     const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
-    
-//     // POSSIBLY THE REASON FOR ERROR
-//     if (taskArray) {
-//       taskArray.forEach((el) => {
-//         renderTaskContent(el);
-//         Project[projectNum].tasks.push(el);
-//         console.log("task array test")
-//       });
-//     } else {
-//       console.log('test')
-//     }
-//     hideDivs();
-//     showDivs();
-//   }
-// });
-
-//     Check if the current project is already selected before rendering the tasks:
-
-// document.body.addEventListener('click', (e) => {
-//   if (e.target.className == 'project-name-p') {
-//     projectNum = e.target.parentNode.dataset.value;
-//     const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
-  
-//     // Check if the current project is already selected
-//     if (Project[projectNum].selected) {
-//       // Don't render the tasks again if the current project is already selected
-//       return;
-//     }
-  
-//     // POSSIBLY THE REASON FOR ERROR
-//     if (taskArray) {
-//       taskArray.forEach((el) => {
-//         renderTaskContent(el);
-//         Project[projectNum].tasks.push(el);
-//         console.log("task array test")
-//       });
-//     } else {
-//       console.log('test')
-//     }
-//     hideDivs();
-//     showDivs();
-  
-//     // Mark the current project as selected
-//     Project[projectNum].selected = true;
-//   }
-// });
