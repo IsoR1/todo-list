@@ -60,7 +60,6 @@ const mainTag = function () {
 
   const updateCompletionStorage = (projInd, taskInd) => {
     let storageArray = JSON.parse(localStorage.getItem("projects"));
-    let taskCompletion = storageArray[projInd].tasks[taskInd].completed
 
     if (storageArray[projInd].tasks[taskInd].completed == false) {
       storageArray[projInd].tasks[taskInd].completed = true
@@ -70,6 +69,13 @@ const mainTag = function () {
 
     localStorage.setItem("projects", JSON.stringify(storageArray))
   }
+
+  const checkIfCompleted = (projInd, taskInd) => {
+    let storageArray = JSON.parse(localStorage.getItem("projects"));
+
+    return storageArray[projInd].tasks[taskInd].completed
+  }
+
 
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
@@ -199,7 +205,7 @@ const mainTag = function () {
           <p class="task-p">${task.priority}</p>
           <div class="task-check-div">
             <label>Completed</label>
-            <input type="checkbox" class="task-checkbox">
+            <input type="checkbox" class="task-checkbox" ${checkIfCompleted(projectNum, taskId) ? "checked" : ""}>
           </div>
         </div>
       </div>
