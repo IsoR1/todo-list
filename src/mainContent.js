@@ -45,7 +45,6 @@ const mainTag = function () {
   const removeProjectFromStorage = (projInd) => {
     let projectsArray = JSON.parse(localStorage.getItem("projects"));
 
-    console.log(`this is the projInd: ${projInd}`)
     projectsArray.splice(projInd, 1);
 
     localStorage.setItem("projects", JSON.stringify(projectsArray))
@@ -54,14 +53,23 @@ const mainTag = function () {
   const removeTaskFromStorage = (projInd, taskInd) => {
     let projectsArray = JSON.parse(localStorage.getItem("projects"));
     
-    console.log(taskInd)
     projectsArray[projInd].tasks.splice(taskInd, 1);
     
-    console.log(projectsArray)
     localStorage.setItem("projects", JSON.stringify(projectsArray));
-    console.log(projectsArray)
   }
 
+  const updateCompletionStorage = (projInd, taskInd) => {
+    let storageArray = JSON.parse(localStorage.getItem("projects"));
+    let taskCompletion = storageArray[projInd].tasks[taskInd].completed
+
+    if (storageArray[projInd].tasks[taskInd].completed == false) {
+      storageArray[projInd].tasks[taskInd].completed = true
+    } else {
+      storageArray[projInd].tasks[taskInd].completed = false;
+    }
+
+    localStorage.setItem("projects", JSON.stringify(storageArray))
+  }
 
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
@@ -196,20 +204,25 @@ const mainTag = function () {
         </div>
       </div>
     `;
-
-    taskDivId++;
+ 
     taskId++;
   };
 
   // Toggle completion
   document.addEventListener('click', (e) => {
-    if (e.target.className === 'task-checkbox'); {
-      // const currentId = e.target.parentNode.parentNode.parentNode.dataset.id;
-      // if (Task[currentId].completed == false) {
-      //   Task[currentId].completed = true;
-      // } else if (Task[currentId].completed == true) {
-      //   Task[currentId].completed = false;
-      // }
+    if (e.target.matches('.task-checkbox')) {
+      let currentId = e.target.parentNode.parentNode.parentNode.dataset.taskId;
+      let projI = e.target.parentNode.parentNode.parentNode.dataset.id;
+
+      if (Project[projI].tasks[currentId].completed == false) {
+        Project[projI].tasks[currentId].completed = true;
+        updateCompletionStorage(projectNum, currentId)
+        console.log(Project[0].tasks[0].completed)
+        console.log(Project[projI].tasks[currentId])
+      } else if (Project[projI].tasks[currentId].completed == true) {
+        Project[projI].tasks[currentId].completed = false;
+        updateCompletionStorage(projectNum, currentId)
+      }
     }
   });
 
@@ -231,7 +244,6 @@ const mainTag = function () {
     addToStorage('task', Task[taskId]);
 
     renderTaskContent(Task[taskId]);
-    console.log(Task[taskId]);
   };
 
   myForm.addEventListener('submit', formSubmitAction);
@@ -294,7 +306,6 @@ const mainTag = function () {
       storageArray.forEach((el) => {
         projectId = el.id;
         Project[projectId] = new Project(el.name, projectId);
-        console.log(Project[projectId].tasks);
         renderProject(el.name);
         projectId++;
       });
@@ -307,7 +318,7 @@ const mainTag = function () {
 
   // Select project and show related tasks
   document.body.addEventListener('click', (e) => {
-    if (e.target.className == 'project-name-p') {
+    if (e.target.matches('.project-name-p')) {
       projectNum = e.target.parentNode.dataset.value;
       const taskArray = JSON.parse(localStorage.getItem('projects'))[projectNum].tasks;
       
@@ -388,7 +399,7 @@ const mainTag = function () {
   // Delete Tasks
   document.addEventListener('click', (e) => {
     const deleteP = document.querySelector('.del-p');
-    if (e.target.className == 'del-p') {
+    if (e.target.matches('.del-p')) {
       let projDataId = e.target.parentNode.parentNode.dataset.id;
       let currentTaskId = e.target.parentNode.parentNode.dataset.taskId;
       let selectedTask = document.querySelector(`[data-task-id="${currentTaskId}"]`);
@@ -407,7 +418,7 @@ const mainTag = function () {
 
   // Delete Projects
   document.addEventListener('click', (e) => {
-      if (e.target.className == 'project-del') {
+      if (e.target.matches('.project-del')) {
         let projDataVal = e.target.parentNode.dataset.value;
         let projectName = e.target.previousSibling.innerHTML;
         if (projectName !== 'Default') {
