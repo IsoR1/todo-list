@@ -1,6 +1,7 @@
 import {
   compareAsc, format, endOfMonth, endOfWeek, endOfDay, parseISO,
 } from 'date-fns';
+import {addToStorage, removeProjectFromStorage, removeTaskFromStorage, updateCompletionStorage, checkIfCompleted} from './storage.js'
 import Task from './task.js';
 import Project from './project.js';
 
@@ -27,55 +28,6 @@ const mainTag = function () {
     div.append(text);
     return div;
   };
-
-  const addToStorage = (call, task) => {
-    if (localStorage.getItem('projects') === null) {
-      projects = [];
-    } else {
-      projects = JSON.parse(localStorage.getItem('projects'));
-    }
-    if (call == 'project') {
-      projects.push(task);
-    } else if (call == 'task') {
-      projects[projectNum].tasks.push(task);
-    }
-    localStorage.setItem('projects', JSON.stringify(projects));
-  };
-
-  const removeProjectFromStorage = (projInd) => {
-    let projectsArray = JSON.parse(localStorage.getItem("projects"));
-
-    projectsArray.splice(projInd, 1);
-
-    localStorage.setItem("projects", JSON.stringify(projectsArray))
-  }
-  
-  const removeTaskFromStorage = (projInd, taskInd) => {
-    let projectsArray = JSON.parse(localStorage.getItem("projects"));
-    
-    projectsArray[projInd].tasks.splice(taskInd, 1);
-    
-    localStorage.setItem("projects", JSON.stringify(projectsArray));
-  }
-
-  const updateCompletionStorage = (projInd, taskInd) => {
-    let storageArray = JSON.parse(localStorage.getItem("projects"));
-
-    if (storageArray[projInd].tasks[taskInd].completed == false) {
-      storageArray[projInd].tasks[taskInd].completed = true
-    } else {
-      storageArray[projInd].tasks[taskInd].completed = false;
-    }
-
-    localStorage.setItem("projects", JSON.stringify(storageArray))
-  }
-
-  const checkIfCompleted = (projInd, taskInd) => {
-    let storageArray = JSON.parse(localStorage.getItem("projects"));
-
-    return storageArray[projInd].tasks[taskInd].completed
-  }
-
 
   const formElements = () => {
     const todaysDate = format(new Date(), 'yyyy-MM-dd');
@@ -223,8 +175,6 @@ const mainTag = function () {
       if (Project[projI].tasks[currentId].completed == false) {
         Project[projI].tasks[currentId].completed = true;
         updateCompletionStorage(projectNum, currentId)
-        console.log(Project[0].tasks[0].completed)
-        console.log(Project[projI].tasks[currentId])
       } else if (Project[projI].tasks[currentId].completed == true) {
         Project[projI].tasks[currentId].completed = false;
         updateCompletionStorage(projectNum, currentId)
