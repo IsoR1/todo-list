@@ -1,4 +1,5 @@
-const addToStorage = (call, task) => {
+const addToStorage = (call, task, projectNumber) => {
+  let projects;
     if (localStorage.getItem('projects') === null) {
       projects = [];
     } else {
@@ -7,7 +8,7 @@ const addToStorage = (call, task) => {
     if (call == 'project') {
       projects.push(task);
     } else if (call == 'task') {
-      projects[projectNum].tasks.push(task);
+      projects[projectNumber].tasks.push(task);
     }
     localStorage.setItem('projects', JSON.stringify(projects));
   };

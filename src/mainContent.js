@@ -117,6 +117,20 @@ const mainTag = function () {
     return form;
   };
 
+  const createProjectPrompt = () => {
+    const promptDiv = createEl("div", "project-prompt");
+    promptDiv.setAttribute("id", "project-prompt-id");
+    // prompt.style.display = 'none'
+
+    const projectName = window.prompt("Enter a project name:")
+    // const form = createProjectForm();
+    // prompt.append(form);
+
+    return promptName
+  }
+
+  // createProjectPrompt();
+
   const renderMain = () => {
     const mainTag = createEl('main', 'main-content');
     const taskDiv = createEl('div', 'task-container');
@@ -127,7 +141,8 @@ const mainTag = function () {
     const formProject = createProjectForm();
     content.append(mainTag);
     mainTag.append(taskDiv);
-    mainTag.append(formD);
+    // mainTag.append(formD);
+    taskDiv.append(formD);
     mainTag.append(projectFormDiv);
     projectFormDiv.append(formProject);
     formD.append(formE);
@@ -152,7 +167,7 @@ const mainTag = function () {
         </div>
         <div class="card-div">
           <p class="task-p">${task.title}</p>
-          <p class="task-p">${task.description}</p>
+          <p class="task-p des">${task.description}</p>
           <p class="task-p task-card-date">${task.dueDate}</p>
           <p class="task-p">${task.priority}</p>
           <div class="task-check-div">
@@ -197,7 +212,7 @@ const mainTag = function () {
 
     Project[projectNum].addTask(Task[taskId]);
 
-    addToStorage('task', Task[taskId]);
+    addToStorage('task', Task[taskId], projectNum);
 
     renderTaskContent(Task[taskId]);
   };
@@ -241,11 +256,11 @@ const mainTag = function () {
     renderProject(projectName);
 
     if (projectId == 0 && !storageArray) {
-      addToStorage('project', Project[projectId]);
+      addToStorage('project', Project[projectId], projectNum);
     }
 
     if (projectId !== 0) {
-      addToStorage('project', Project[projectId]);
+      addToStorage('project', Project[projectId], projectNum);
     }
 
     projectId++;
@@ -350,6 +365,7 @@ const mainTag = function () {
   projectFormSvg.addEventListener('click', () => {
     const projectForm = document.querySelector('.project-form-div');
     projectForm.classList.toggle('hidden');
+    createProjectPrompt()
   });
 
   // Delete Tasks
