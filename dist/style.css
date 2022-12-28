@@ -150,12 +150,14 @@
 
 .project-list-text {
     font-size: 24px;
+    font-family: 'Raleway', sans-serif;
 }
 
 .project-list-div {
     display: flex;
     justify-content: space-between;
     font-size: 1.2rem;
+    font-family: 'Exo 2', sans-serif;
 }
 
 .project-list-con {
@@ -173,6 +175,7 @@
 .date {
     font-size: 1.2rem;
     cursor: pointer;
+    font-family: 'Nunito Sans', sans-serif;
 }
 
 
