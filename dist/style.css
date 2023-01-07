@@ -212,10 +212,35 @@
     margin-left: 10px;
 }
 
-#form-id fieldset {
-    padding: 20px;
+#project-form-id label {
+    margin-right: 10px;
+    margin-left: 10px;
 }
 
-#form-id button {
+#input-project-id {
+    margin-right: 5px;
+}
+
+#form-id fieldset {
+    padding: 20px;
+    border-radius: 6px;
+}
+
+#submit-btn-id {
     margin-left: 5px;
+    border-radius: 3px;
+    padding: 4px 8px
+}
+
+#submit-btn-id:active {
+    box-shadow: 1px 2px var(--english-red);
+}
+
+#submit-project-btn-id:active,
+#submit-btn-id:active {
+    padding: 8px 13px 6px;
+}
+
+#submit-project-btn-id {
+    padding: 2px 6px
 }
