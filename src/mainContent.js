@@ -79,6 +79,7 @@ const mainTag = function () {
     formBtn.classList.add('submit-form');
     formBtn.setAttribute('id', 'submit-btn-id');
     formBtn.innerHTML = 'Submit Form';
+    
 
     formEl.appendChild(formFieldset);
     formFieldset.appendChild(formLegend);
@@ -117,20 +118,6 @@ const mainTag = function () {
     return form;
   };
 
-  const createProjectPrompt = () => {
-    const promptDiv = createEl("div", "project-prompt");
-    promptDiv.setAttribute("id", "project-prompt-id");
-    // prompt.style.display = 'none'
-
-    const projectName = window.prompt("Enter a project name:")
-    // const form = createProjectForm();
-    // prompt.append(form);
-
-    return promptName
-  }
-
-  // createProjectPrompt();
-
   const renderMain = () => {
     const mainTag = createEl('main', 'main-content');
     const taskDiv = createEl('div', 'task-container');
@@ -141,9 +128,10 @@ const mainTag = function () {
     const formProject = createProjectForm();
     content.append(mainTag);
     mainTag.append(taskDiv);
-    // mainTag.append(formD);
+
     taskDiv.append(formD);
-    mainTag.append(projectFormDiv);
+    
+    taskDiv.append(projectFormDiv);
     projectFormDiv.append(formProject);
     formD.append(formE);
   };
@@ -157,27 +145,60 @@ const mainTag = function () {
   let taskId = 0;
   let projectId = 0;
 
+  // Render a task div and it's content
   const renderTaskContent = (task) => {
     const taskCont = document.querySelector('.task-container');
 
-    taskCont.innerHTML += `
-      <div class="task-div" data-id="${projectNum}" data-task-id="${taskId}">
-        <div class="delete-div">
-          <p class="del-p">X</p>
-        </div>
-        <div class="card-div">
-          <p class="task-p">${task.title}</p>
-          <p class="task-p des">${task.description}</p>
-          <p class="task-p task-card-date">${task.dueDate}</p>
-          <p class="task-p">${task.priority}</p>
-          <div class="task-check-div">
-            <label>Completed</label>
-            <input type="checkbox" class="task-checkbox" ${checkIfCompleted(projectNum, taskId) ? "checked" : ""}>
-          </div>
-        </div>
-      </div>
-    `;
- 
+    const taskDiv = createEl("div", "task-div");
+    taskDiv.setAttribute("data-id", projectNum)
+    taskDiv.setAttribute("data-task-id", taskId)
+
+    const deleteDiv = createEl("div", "delete-div")
+
+    const deleteP = createEl("p", "del-p");
+    deleteP.append("X")
+    const cardDiv = createEl("div", "card-div");
+
+    const taskTitleP = createEl("p", 'task-p');
+    taskTitleP.textContent = task.title;
+
+    const taskdesP = createEl("p", 'task-p');
+    taskdesP.classList.add("des")
+    taskdesP.textContent = task.description;
+
+    const taskdateP = createEl("p", 'task-p');
+    taskdateP.classList.add("task-card-date")
+    taskdateP.textContent = task.dueDate;
+
+    const taskprioP = createEl("p", 'task-p');
+    taskprioP.textContent = task.priority;
+
+    const checkmarkDiv = createEl("div", "task-check-div");
+    const checkLabel = document.createElement("label");
+    checkLabel.textContent = 'Completed'
+    const checkInput = createEl("input", "task-checkbox")
+    checkInput.setAttribute("type", "checkbox")
+    // checkInput.textContent = `${checkIfCompleted(projectNum, taskId) ? "checked" : ""}`
+    if (checkIfCompleted(projectNum, taskId)) {
+      checkInput.setAttribute("checked", "")
+    }
+    
+    taskDiv.append(deleteDiv);
+    deleteDiv.append(deleteP);
+
+    taskDiv.append(cardDiv);
+    cardDiv.append(taskTitleP);
+    cardDiv.append(taskdesP);
+    cardDiv.append(taskdateP);
+    cardDiv.append(taskprioP);
+
+    console.log(checkmarkDiv)
+    checkmarkDiv.append(checkLabel);
+    checkmarkDiv.append(checkInput)
+    cardDiv.append(checkmarkDiv);
+
+    taskCont.append(taskDiv)
+
     taskId++;
   };
 
@@ -200,6 +221,7 @@ const mainTag = function () {
 
   const formSubmitAction = (e) => {
     e.preventDefault();
+    e.stopPropagation();
 
     const submitButton = document.getElementById('submit-btn-id');
 
@@ -209,15 +231,18 @@ const mainTag = function () {
     const prioInput = document.getElementById('select-priority-id').value;
 
     Task[taskId] = new Task(titleInput, desInput, dateInput, prioInput);
-
+    console.log('task created')
     Project[projectNum].addTask(Task[taskId]);
 
     addToStorage('task', Task[taskId], projectNum);
 
     renderTaskContent(Task[taskId]);
+
   };
 
+  // Create a task
   myForm.addEventListener('submit', formSubmitAction);
+  
 
   const renderProject = (name) => {
     const projectListDiv = document.querySelector('.project-list-con');
@@ -246,7 +271,6 @@ const mainTag = function () {
       projectName = document.getElementById('input-project-id').value;
     }
 
-    // if (document.getElementById("input-project-id").value == 'Default') {
     if (projectName == 'Default' && projectId > 0) {
       alert("Default is not a valid name, please choose another")
       return
@@ -286,7 +310,7 @@ const mainTag = function () {
   };
 
   renderProjectStorage();
-
+  
   // Select project and show related tasks
   document.body.addEventListener('click', (e) => {
     if (e.target.matches('.project-name-p')) {
@@ -296,23 +320,23 @@ const mainTag = function () {
       if (Project[projectNum].selected) {
         return;
       }
-          
-
-    if (!Project[projectNum].tasksRendered) {
-      if (taskArray) {
-        taskArray.forEach((el) => {
-          renderTaskContent(el);
-          Project[projectNum].tasks.push(el);
-        });
-        Project[projectNum].tasksRendered = true;
+      
+      
+      if (!Project[projectNum].tasksRendered) {
+        if (taskArray) {
+          taskArray.forEach((el) => {
+            renderTaskContent(el);
+            Project[projectNum].tasks.push(el);
+          });
+          Project[projectNum].tasksRendered = true;
+        }
       }
-    }
-
+      
       hideDivs();
       showDivs();
-
+      
       Project[projectNum].selected = true;
-
+      
       let allProjects = document.querySelectorAll(".project-list-div");
       allProjects.forEach(el => {
         if (el.dataset.value !== projectNum) {
@@ -320,8 +344,9 @@ const mainTag = function () {
         }
       })
     }
+  
   });
-
+  
   const hideDivs = () => {
     const taskDivs = document.querySelectorAll('.task-div');
     taskDivs.forEach((el) => {
@@ -330,7 +355,7 @@ const mainTag = function () {
       }
     });
   };
-
+  
   const showDivs = () => {
     const taskDivs = document.querySelectorAll('.task-div');
     taskDivs.forEach((el) => {
@@ -339,7 +364,7 @@ const mainTag = function () {
       }
     });
   };
-
+  
   // Hide sidebar on click
   const menuSvgTag = document.querySelector('.menu-svg');
   menuSvgTag.addEventListener('click', () => {
@@ -352,22 +377,33 @@ const mainTag = function () {
       con.style.gridTemplateAreas = '"head head head" "side main main" "side main main"';
     }
   });
-
+  
   // Show Task form on click
   const taskSvg = document.querySelector('.plus-svg');
   taskSvg.addEventListener('click', () => {
     const formDiv = document.querySelector('.form-div');
     formDiv.classList.toggle('hidden');
+    if (formDiv.className.includes("hidden")) {
+      document.querySelector(".project-form-div").style.gridRow = '-2'
+    } else {
+      document.querySelector(".project-form-div").style.gridRow = '-4'
+    }
   });
-
+  
   // Show Project form on click
   const projectFormSvg = document.querySelector('.project-svg');
   projectFormSvg.addEventListener('click', () => {
     const projectForm = document.querySelector('.project-form-div');
     projectForm.classList.toggle('hidden');
-    createProjectPrompt()
+    if (document.querySelector(".form-div").className.includes("hidden")) {
+      // projectForm.style.gridRow = '6';
+      projectForm.style.gridRow = '-2 / span 2';
+    } else {
+      // projectForm.style.gridRow = '5';
+      // projectForm.style.gridRow = '-2';
+    }
   });
-
+  
   // Delete Tasks
   document.addEventListener('click', (e) => {
     const deleteP = document.querySelector('.del-p');
@@ -384,7 +420,7 @@ const mainTag = function () {
       Project[projDataId].removeTask(currentTaskId);
       selectedTask.remove();
       taskId--;
-      taskDataId--;
+      // taskDataId--;
     }
   });
 
@@ -453,3 +489,5 @@ const mainTag = function () {
 };
 
 export default mainTag;
+
+
