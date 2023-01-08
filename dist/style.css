@@ -134,6 +134,7 @@
     background-color: var(--english-red);
     color: var(--spanish-gray);
     grid-area: side;
+    min-height: 100vh;
 }
 
 .sidebar-dates-container {
