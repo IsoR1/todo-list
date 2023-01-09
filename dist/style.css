@@ -16,13 +16,13 @@
 }
 
 #content {
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--slate-gray);
     display: grid;
     grid-template-areas: "head head head"
                           "side main main"
                           "side main main";
-    grid-template-rows: 10% 1fr;
+    grid-template-rows: 120px 1fr;
     grid-template-columns: 10% 1fr;
 }
 
@@ -74,10 +74,14 @@
 .task-container {
     min-height: 100%;
     background-color: var(--dark-sienna);
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    /* display: grid; */
+    /* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
     /* grid-template-rows: repeat(6, 1fr); */
-    grid-template-rows: repeat(auto-fit, minmax(1rem, 1fr));
+    /* grid-template-rows: repeat(auto-fit, minmax(1rem, 1fr)); */
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
     gap: 5px;
 }
 
@@ -85,10 +89,13 @@
     background-color: blueviolet;
     display: flex;
     flex-direction: column;
-    flex-basis: 300px;
+    /* flex-basis: 300px; */
     /* min-width: 300px; */
     border: 2px solid gold;
     border-radius: 10px;
+    max-height: 30%;
+    /* max-width: 200px; */
+    min-width: 70%;
 }
 
 .del-p {
