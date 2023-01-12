@@ -50,6 +50,7 @@ const mainTag = function () {
     labelDes.innerHTML = 'Description:';
     inputDes.setAttribute('id', 'input-description-id');
     inputDes.name = 'des';
+    inputDes.setAttribute("maxlength", 80);
     const inputDate = document.createElement('input');
     const labelDate = document.createElement('label');
     labelDate.innerHTML = 'Date:';
